@@ -1,0 +1,22 @@
+# ignore log files
+*.log
+
+# ignore a directory called "build"
+build/
+
+# ignore a file called "secrets.json"
+secrets.json 
+
+# test
+input.json
+
+# my private data
+secret_data.py
+
+# virtual environment
+venv/
+
+
+# FOR NOW
+instagram_clone_vuejs_vuetify_vite/
+
