@@ -41,8 +41,8 @@ class Jobs(BaseModel):
     finished_on: Optional[datetime] = None
     results: Dict
 
-class UserBase(BaseModel):    
-    access_level: int
+class UserBase(BaseModel): 
+    id: Optional[int] = None
     name: str
     surname: str
     password: str

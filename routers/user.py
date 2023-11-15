@@ -7,6 +7,9 @@ from typing import List, Optional
 from auth.oauth2 import get_current_user
 
 
+from fastapi.responses import JSONResponse
+from fastapi import HTTPException
+
 router = APIRouter(
     prefix = '/user',
     tags = ['user']
@@ -24,7 +27,11 @@ def startup_event():
 
 @router.post("/create", response_model = UserBase)
 def create_user(request: UserBase, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    return db_user.create(db, request, current_user)
+    try:
+        return db_user.create(db, request, current_user)
+    except HTTPException as e:
+        return JSONResponse(content={"detail": str(e.detail)}, status_code=e.status_code)
+    # return db_user.create(db, request, current_user)
    
 
 @router.get('/all', response_model = List[UserBase])
@@ -42,3 +49,12 @@ def update_user(id:int, request: UserBase, db: Session = Depends(get_db), curren
 @router.post('/delete/{id}')
 def delete(id: int, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
    return db_user.delete(db, id, current_user)
+
+@router.post('/uploadImage')
+def submit_form(
+   images: List[UploadFile] = File(...), 
+   db: Session = Depends(get_db), 
+   current_user = Depends(get_current_user)
+   ):
+    return db_user.upload_image(db, images)
+   

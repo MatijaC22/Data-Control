@@ -2,7 +2,7 @@ from sqlalchemy.orm.session import Session
 from db.models import DbUser
 from routers.schemas import UserBase
 # from db.hashing import Hash
-from fastapi import HTTPException, status, UploadFile
+from fastapi import HTTPException, status, UploadFile, File
 import datetime
 from typing import List
 import os
@@ -29,7 +29,7 @@ def create_initial_user(db: Session):
         db.commit()
         db.refresh(new_user)
 
-def create(db: Session, inserted_user:UserBase, current_user):
+def create(db: Session, inserted_user:UserBase, current_user: UserBase):
     if current_user.get('access_level') != 1:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
           detail = f"User don't have authorization!")
@@ -61,7 +61,7 @@ def create(db: Session, inserted_user:UserBase, current_user):
         password = inserted_user.password,
         email = inserted_user.email,
         date_of_birth = inserted_user.date_of_birth,
-        image_url = 'notfornow',#inserted_user.new_filename,
+        image_url = inserted_user.image_url,
         nationality = inserted_user.nationality,
         access_level = inserted_user.access_level,
         active = inserted_user.active,
@@ -153,16 +153,16 @@ def delete(db: Session, id: int, current_user:DbUser):
     return 'ok'
 
 # # # NAPRAVI OVO KAKO SPADA
-# # def upload_image(email, image: UploadFile = File(...)):
-# #    if hasattr(image, 'filename'):
-# #        new = f'_{email}.'
-# #        filename = new.join(image.filename.rsplit('.', 1))
-# #        path = f'images/users/{filename}'
-# #     #    return path
-# #    else:
-# #        path = f"/images/users/{email}"
+def upload_image(email, image: UploadFile = File(...)):
+   if hasattr(image, 'filename'):
+       new = f'_{email}.'
+       filename = new.join(image.filename.rsplit('.', 1))
+       path = f'images/users/{filename}'
+    #    return path
+   else:
+       path = f"/images/users/{email}"
 
 
-# #    with open(path, "w+b") as buffer:
-# #       shutil.copyfileobj(image.file, buffer)
-# #       return {'filename': path}
+   with open(path, "w+b") as buffer:
+      shutil.copyfileobj(image.file, buffer)
+      return {'filename': path}
