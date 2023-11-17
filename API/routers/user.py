@@ -52,9 +52,9 @@ def delete(id: int, db: Session = Depends(get_db), current_user = Depends(get_cu
 
 @router.post('/uploadImage')
 def submit_form(
-   images: List[UploadFile] = File(...), 
-   db: Session = Depends(get_db), 
-   current_user = Depends(get_current_user)
-   ):
-    return db_user.upload_image(db, images)
+    name: str = Form(...),
+    images: List[UploadFile]   = File(...), 
+    current_user = Depends(get_current_user)
+    ):
+    return db_user.upload_image( name, current_user, images)
    

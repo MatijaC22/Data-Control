@@ -6,7 +6,7 @@ from fastapi import HTTPException, status, UploadFile, File
 import datetime
 from typing import List
 import os
-
+from utils import validate_file_extension, validate_file_size
 
 # Event function to create a new user if none exist
 def create_initial_user(db: Session):
@@ -40,20 +40,7 @@ def create(db: Session, inserted_user:UserBase, current_user: UserBase):
         raise HTTPException(status_code = status.HTTP_403_FORBIDDEN,
           detail = f"User with this email already exist!")
 
-    # image_dir = f"images/users/"
-    # os.makedirs(image_dir, exist_ok=True)
     
-    # imageListAsString = ''
-    # validate_file_extension(os.path.splitext(image.filename)[1])        
-    # validate_file_size(image.file, 5 * 1024 * 1024)
-    
-    # file_extension = os.path.splitext(image.filename)[1]
-    # new_filename = f"{email}{file_extension}"
-
-
-    # file_path = os.path.join(image_dir, new_filename)
-    # with open(file_path, "wb") as f:
-    #     f.write(image.file.read())
     
     new_user = DbUser(
         name = inserted_user.name,
@@ -152,17 +139,21 @@ def delete(db: Session, id: int, current_user:DbUser):
     db.commit()
     return 'ok'
 
-# # # NAPRAVI OVO KAKO SPADA
-def upload_image(email, image: UploadFile = File(...)):
-   if hasattr(image, 'filename'):
-       new = f'_{email}.'
-       filename = new.join(image.filename.rsplit('.', 1))
-       path = f'images/users/{filename}'
-    #    return path
-   else:
-       path = f"/images/users/{email}"
+def upload_image(name: str, current_user: DbUser, images:List[UploadFile]):#images: UploadFile = File(...)):
+    
+    if (current_user.get('access_level') != 1):
+        raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
+          detail = f"User don't have authorization!")
 
-
-   with open(path, "w+b") as buffer:
-      shutil.copyfileobj(image.file, buffer)
-      return {'filename': path}
+    image_dir = f"assets/images/users/"
+    os.makedirs(image_dir, exist_ok=True)
+    
+    for image in images:
+        validate_file_extension(os.path.splitext(image.filename)[1])        
+        validate_file_size(image.file, 5 * 1024 * 1024)
+        
+        # image.filename = name
+        # file_path = os.path.join(image_dir, name + '.jpg')
+        with open(name + '.jpg', "wb") as f:
+            f.write(image.file.read())
+  
