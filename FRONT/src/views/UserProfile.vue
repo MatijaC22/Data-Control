@@ -9,7 +9,7 @@
             <v-row justify="center" >
               <v-col align-self="start" class="d-flex justify-center align-center pa-0" cols="12">
                 <v-avatar class="profile avatar-center-heigth avatar-shadow" color="grey" size="164">
-                  <v-img v-if="userData.email != undefined" :src="this.BASE_URL+'images/users/'+userData.image_url"></v-img>
+                  <v-img v-if="userData.email != undefined" :src="this.BASE_URL+'assets/images/users/'+userData.image_url"></v-img>
                 </v-avatar>
               </v-col>
             </v-row>

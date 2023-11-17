@@ -64,14 +64,6 @@
                   ></v-select>
                   <span v-if="submitClicked && !Nationality.length" style="color:red;">{{NationalityAlarm}}</span>
                 </v-col>
-                <!-- <v-col cols="12" sm="6" md="4">
-                  <v-file-input
-                    label="Image*"
-                    accept="image/*"
-                    v-model="ImageUrl"
-                    @change="handleImageUpload"
-                  ></v-file-input>
-                </v-col> -->
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
                     v-model="DateOfBirth"
@@ -85,7 +77,10 @@
                     label="Image*"
                     accept="image/*"
                     @change="handleImageUpload"
+                    v-model="selectedImages"
+                    type='file'
                   ></v-file-input>
+
                   <img v-if="uploadedImage" :src="uploadedImage" alt="Uploaded Image" style="max-width: 250px; margin-left:40px;">
                 </v-col>               
 
@@ -110,7 +105,6 @@
 
 <script>
 import { toRaw } from 'vue';
-import axios from 'axios';
 
 import { useCounterStore } from '@/stores/counter';
 import { mapState } from 'pinia'
@@ -149,7 +143,7 @@ export default {
       PasswordAlarm:'Enter user password!',
       submitClicked:false,
       
-      selectedImages: null,    
+      selectedImages: [],    
       uploadedImage: null, // Base64-encoded image data
 
 
@@ -160,14 +154,14 @@ export default {
     }
   },
   methods:{
-    ...mapActions(useCounterStore, ['logout','updateUser','insertUser']),
+    ...mapActions(useCounterStore, ['logout','updateUser','insertUser','uploadImage']),
     
     handleImageUpload(event) {
       const file = event.target.files[0];
-      selectedImages = file.name
-      console.log('file')
-      console.log(file.name)
-      console.log(file.type)
+      // selectedImages = file.name
+      // console.log('file')
+      // console.log(file.name)
+      // console.log(file.type)
       if (file) {
         const reader = new FileReader();
 
@@ -186,7 +180,6 @@ export default {
         this.login_in_submission = true;
         this.login_show_alert = true;
 
-        
         let userData = {
           id: this.Id,
           active: this.Active,
@@ -194,54 +187,36 @@ export default {
           email: this.Email,
           name: this.Name,
           surname: this.Surname,
-          image_url: this.selectedImages,
+          image_url: 'asstes/images/users/'+this.Email,
           nationality: this.Nationality,
           password: this.Password,
           date_of_birth: new Date(this.DateOfBirth).toISOString()//'2023-11-14T17:39:10.528Z'
         }
         // console.log(userData)
 
+       
+        let image_name = this.Email
         if(this.Id){
           this.updateUser(userData)
+          
+          if(this.ImageUrl == '' && this.selectedImages){
+            
+            this.uploadImage(image_name, this.selectedImages)
+          }
         }else{
           this.insertUser(userData)
-        }
-
-        const formData = new FormData();
-        formData.append('images', this.selectedImages);
-        console.log(formData)
-
-        await axios.post(this.BASE_URL+'user/uploadImage', formData,
-        {
-          headers: {
-            'Authorization':'Bearer ' + localStorage.getItem('access_token'),
-            'Accept': 'application/json',
-            'Content-Type': 'multipart/form-data' 
+          
+          if(this.ImageUrl == '' && this.selectedImages){
+  
+            this.uploadImage(image_name, this.selectedImages)
           }
-        })
-          .then(response => {
-            // Handle the response from the backend
-            console.log('Form submitted successfully', response.data);
-            this.login_in_submission = true;
-            this.login_alert_variant = 'color: white; background-color:#339933; border: 1px solid #339933; box-shadow: 0 0 5px rgba(0,255,0,.3), 0 0 10px rgba(0,255,0,.2), 0 0 15px rgba(0,255,0,.1), 0 1px 0 #339933;';
-            this.login_alert_msg = 'Success! You have inserted new post.';
-          })
-          .catch(error => {
-            // Handle errors
-            console.error('Error submitting form', error);
-            if(error.response.data.detail == 'Could not validate credentials'){
-              this.logout()          
-            }
-            this.login_in_submission = true;
-            this.login_alert_variant = 'color: white; background-color:#990000;  border: 1px solid #990000;  box-shadow: 0 0 5px rgba(255,0,0,.3), 0 0 10px rgba(255,0,0,.2), 0 0 15px rgba(255,0,0,.1), 0 1px 0 #990000';
-            this.login_alert_msg = error.response.data.detail;
-            return
-          });
+        }
+                          
 
         setTimeout(()=>{
           this.$emit('closeWindow',userData);
           if(!this.Id){
-            window.location.reload();
+            // window.location.reload();
           }
         },1000)
 

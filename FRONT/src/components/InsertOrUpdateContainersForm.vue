@@ -81,6 +81,48 @@
                   ></v-autocomplete>
                   <span v-if="submitClicked && !ProductType.length" style="color:red;">{{ProductTypeAlarm}}</span>
                 </v-col>
+                <!-- here is testing purpose for image carousel -->
+                <v-file-input
+                    mulitple
+                    label="Image*"
+                    accept="image/*"
+                    @change="handleImageUpload"
+                    v-model="selectedImages"
+                    type='file'
+                  ></v-file-input>
+                  <!-- <v-card> -->
+                  
+                  <div v-if="allImagesNames.length > 0">
+                    <h4>Selected Image Names:</h4>
+                    <v-list>
+                      <v-list-item v-for="(image,i) in allImagesNames" :key="i">
+                        <v-list-item-content>
+                          {{ image.name }}
+                        </v-list-item-content>
+
+                        <v-list-item-icon>
+                          <v-icon @click="deleteImage(i)">mdi-delete</v-icon>
+                        </v-list-item-icon>
+                      </v-list-item>
+                    </v-list>
+                  </div> 
+                <!-- </v-card> -->
+                <v-carousel
+                  cycle
+                  height="400"
+                  hide-delimiter-background
+                  show-arrows="hover"
+                  v-if="uploadedImage.length"
+                >
+                  <v-carousel-item
+                    v-for="(slide, i) in uploadedImage"
+                    :src="slide"
+                    :key="i"
+                    style="object-fit: contain; object-position: center; background-color:black;"
+                  >
+                  </v-carousel-item>
+                </v-carousel>
+                
               </v-row>
     <v-btn 
       type="submit" 
@@ -121,6 +163,10 @@ export default {
   },
   data() {
     return{
+      uploadedImage:[],
+      selectedImages:null,
+      allImages:[],
+      allImagesNames:[],
       // loginSchema: {
       //   ref:'required|min:3|max:32',
       //   location:'required',
@@ -155,6 +201,26 @@ export default {
     }
   },
   methods:{
+    deleteImage(i){
+      this.allImagesNames.splice(i,1)
+      this.allImages.splice(i,1)
+      this.uploadedImage.splice(i,1);
+    },
+    handleImageUpload(event) {
+      const file = event.target.files[0];
+      //HERE IS MISSING PART OF SENDING IN DATABASE FIND A WAY HOW TO CONNECT IT
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          this.allImages.push(this.selectedImages)
+          this.allImagesNames.push(event.target.files[0])
+          console.log(this.allImages)
+          this.uploadedImage.push(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    },
     ...mapActions(useCounterStore, ['logout']),
 
     submitButtonPushed(){

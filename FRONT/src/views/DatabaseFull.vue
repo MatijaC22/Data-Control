@@ -4,7 +4,9 @@
     <v-card class="pa-1" elevation="2" style="background-image: linear-gradient(to top right, rgba(19,84,122,.8), rgba(128,208,199,.8)), url('../src/assets/images/background3.jpg'); background-size: cover;">
       <v-card color="grey-lighten-5" border density="compact">
         <div v-if="isLoading">Loading...</div>
-        <DataTable v-else :dataItems="list" :dataItemsHeaders="headers" :name="this.$route.fullPath.split('database/')[1].toUpperCase()"/>
+        <DataTable v-else :dataItems="list" 
+                          :dataItemsHeaders="headers" 
+                          :name="this.$route.fullPath.split('database/')[1].toUpperCase()"/>
         <br>
       </v-card>
     </v-card>

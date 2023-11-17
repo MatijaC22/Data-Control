@@ -108,7 +108,7 @@
         
         <v-list>
           <v-list-item
-            :prepend-avatar="this.BASE_URL+'images/users/'+userData.image_url"
+            :prepend-avatar="this.BASE_URL+'assets/images/users/'+userData.image_url"
             :title="userData.name.toUpperCase()+' '+userData.surname.toUpperCase()"
           ></v-list-item>
 

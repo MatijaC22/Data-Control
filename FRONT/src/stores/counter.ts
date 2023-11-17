@@ -148,19 +148,11 @@ export const useCounterStore = defineStore({
           });
     },
     async insertUser(user:User){
+      
       delete user['id'];
-      // let jony = {
-      //   name: 'string',
-      //   surname: 'string',
-      //   password: 'string',
-      //   email: 'string',
-      //   date_of_birth: '2023-11-14T17:39:10.528Z',
-      //   image_url: 'string',
-      //   nationality: 'string',
-      //   access_level: 0,
-      //   active: true
-      // }
+      
       console.log(user)
+      
       await axios.post(this.BASE_URL+'user/create', user,
         {
           headers: {
@@ -173,6 +165,7 @@ export const useCounterStore = defineStore({
           .then(response => {
             // Handle the response from the backend
             console.log('Form submitted successfully', response.data);
+            
             // this.login_in_submission = true;
             // this.login_alert_variant = 'color: white; background-color:#339933; border: 1px solid #339933; box-shadow: 0 0 5px rgba(0,255,0,.3), 0 0 10px rgba(0,255,0,.2), 0 0 15px rgba(0,255,0,.1), 0 1px 0 #339933;';
             // this.login_alert_msg = 'Success! You have inserted new employ.';
@@ -208,6 +201,40 @@ export const useCounterStore = defineStore({
         }
         return {};
       }      
+    },
+    async uploadImage(image_name: string, images: any){
+
+      const formData = new FormData();
+      formData.append('images', images[0]);
+      formData.append('name', image_name);
+      console.log(formData)
+
+      await axios.post(this.BASE_URL+'user/uploadImage', formData,
+      {
+        headers: {
+          'Authorization':'Bearer ' + localStorage.getItem('access_token'),
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data' 
+        }
+      })
+        .then(response => {
+          // // Handle the response from the backend
+          // console.log('Form submitted successfully', response.data);
+          // this.login_in_submission = true;
+          // this.login_alert_variant = 'color: white; background-color:#339933; border: 1px solid #339933; box-shadow: 0 0 5px rgba(0,255,0,.3), 0 0 10px rgba(0,255,0,.2), 0 0 15px rgba(0,255,0,.1), 0 1px 0 #339933;';
+          // this.login_alert_msg = 'Success! You have inserted new post.';
+        })
+        .catch(error => {
+          // // Handle errors
+          // console.error('Error submitting form', error);
+          // if(error.response.data.detail == 'Could not validate credentials'){
+          //   this.logout()          
+          // }
+          // this.login_in_submission = true;
+          // this.login_alert_variant = 'color: white; background-color:#990000;  border: 1px solid #990000;  box-shadow: 0 0 5px rgba(255,0,0,.3), 0 0 10px rgba(255,0,0,.2), 0 0 15px rgba(255,0,0,.1), 0 1px 0 #990000';
+          // this.login_alert_msg = error.response.data.detail;
+          // return
+        });
     }
   }
 })
