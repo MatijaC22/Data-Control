@@ -134,7 +134,6 @@ export default {
       AccessLevel:toRaw(this.uniqueItem).access_level != undefined ? toRaw(this.uniqueItem).access_level : 0,
       Active:toRaw(this.uniqueItem).active != undefined ? toRaw(this.uniqueItem).active : false,
       
-      
       NameAlarm:'Enter user first name!',
       AccessLevelAlarm:'Enter number!',
       EmailAlarm:'Enter user email!',
@@ -156,21 +155,6 @@ export default {
   methods:{
     ...mapActions(useCounterStore, ['logout','updateUser','insertUser','uploadImage']),
     
-    handleImageUpload(event) {
-      const file = event.target.files[0];
-      // selectedImages = file.name
-      // console.log('file')
-      // console.log(file.name)
-      // console.log(file.type)
-      if (file) {
-        const reader = new FileReader();
-
-        reader.onload = () => {
-          this.uploadedImage = reader.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    },
     submitButtonPushed(){
       this.submitClicked = true
     },
@@ -211,12 +195,11 @@ export default {
             this.uploadImage(image_name, this.selectedImages)
           }
         }
-                          
-
+                        
         setTimeout(()=>{
           this.$emit('closeWindow',userData);
           if(!this.Id){
-            // window.location.reload();
+            window.location.reload();
           }
         },1000)
 
@@ -228,6 +211,21 @@ export default {
         // this.login_alert_msg = 'Please wait! We are logging you in.';
       }
       
+    },
+    handleImageUpload(event) {
+      const file = event.target.files[0];
+      // selectedImages = file.name
+      // console.log('file')
+      // console.log(file.name)
+      // console.log(file.type)
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          this.uploadedImage = reader.result;
+        };
+        reader.readAsDataURL(file);
+      }
     }
   },
   created(){
@@ -240,19 +238,7 @@ export default {
 
     myProxy() {
       console.log(new Proxy(this.uniqueItem,{}))
-      return new Proxy(this.uniqueItem,{}
-      //  {
-      //   get(target, key) {
-      //     console.log(`Getting ${key} value: ${target[key]}`);
-      //     return target[key];
-      //   },
-      //   set(target, key, value) {
-      //     console.log(`Setting ${key} value: ${value}`);
-      //     target[key] = value;
-      //     return true;
-      //   }
-      // }
-      );
+      return new Proxy(this.uniqueItem,{});
     },
   }
 }

@@ -4,15 +4,15 @@
 # ignore a directory called "build"
 build/
 
-# ignore a file called "secrets.json"
-secrets.json 
-
 # test
 input.json
 
 # my private data
-secret_data.py
+.env
 
 # virtual environment
 venv/
+
+assets/images/posts/
+assets/images/users/
 

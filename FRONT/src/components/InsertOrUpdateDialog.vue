@@ -11,11 +11,10 @@
           </v-card-title>
           <v-card-text>
             <v-container>
-              <div v-if="type == 'CONTAINERS'">
-                <InsertOrUpdateContainersForm 
+              <div v-if="type == 'JOBS'">
+                <InsertOrUpdateJobsForm 
                     :uniqueItem='uniqueItem'
-                    @update:insertOrUpdateItem="uniqueItem = $event"
-                    @enter-in-db="insertOrUpdateItemInDB"
+                    @closeWindow ="closeDialog"
                 />
               </div>
               <div v-else-if="type == 'EMPLOYES'">
@@ -50,12 +49,12 @@
 </template>
 
 <script>
-import InsertOrUpdateContainersForm from '@/components/InsertOrUpdateContainersForm.vue'
-import InsertOrUpdateEmployesForm from '@/components/InsertOrUpdateEmployesForm.vue'
-import InsertOrUpdatePostsForm from '@/components/InsertOrUpdatePostsForm.vue'
+import InsertOrUpdateJobsForm from '@/components/insertOrUpdate/InsertOrUpdateJobsForm.vue'
+import InsertOrUpdateEmployesForm from '@/components/insertOrUpdate/InsertOrUpdateEmployesForm.vue'
+import InsertOrUpdatePostsForm from '@/components/insertOrUpdate/InsertOrUpdatePostsForm.vue'
 export default {
   components:{
-    InsertOrUpdateContainersForm,
+    InsertOrUpdateJobsForm,
     InsertOrUpdateEmployesForm,
     InsertOrUpdatePostsForm
   },

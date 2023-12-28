@@ -69,10 +69,10 @@ export default {
         });
         this.isLoading = false
     },
-    async ajaxCallContainers(){
+    async ajaxCallJobs(){
       this.isLoading = true
 
-      await axios.get(this.BASE_URL + 'container/all',
+      await axios.get(this.BASE_URL + 'job/all',
         {
           headers: {
             'Authorization':'Bearer ' + localStorage.getItem('access_token'),
@@ -80,7 +80,7 @@ export default {
           }
         })
         .then(response => {
-          console.log('this are all containers.', response);
+          console.log('this are all jobs.', response);
           
           this.list = response.data  
           // console.log(this.list)
@@ -110,8 +110,8 @@ export default {
         // Perform actions based on the new URL path
         if (newPath === '/database/employes') {
           this.ajaxCallEmployes();
-        } else if (newPath === '/database/containers') {
-          this.ajaxCallContainers();
+        } else if (newPath === '/database/jobs') {
+          this.ajaxCallJobs();
         }
       }
     }

@@ -59,8 +59,7 @@ export default{
   methods: {
     ...mapActions(useCounterStore, ['logout']),
     async getNotifications(){
-      
-      await axios.get(this.BASE_URL + 'notification/'+localStorage.getItem('email'),
+      await axios.get(this.BASE_URL + 'notification/'+JSON.parse(localStorage.getItem('userData')).id,
       {
         headers: {
           'Authorization':'Bearer ' + localStorage.getItem('access_token'),

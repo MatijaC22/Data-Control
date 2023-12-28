@@ -183,9 +183,10 @@
   <InsertOrUpdateDialog 
     :insertOrUpdateDialog="insertOrUpdateDialog"
     @update:insertOrUpdateDialog="insertOrUpdateDialog = $event"
-    :insertOrUpdateDialogItem="insertOrUpdateDialogItem"
+    :uniqueItem="chosenItem"
     @insertOrUpdateItem="handleInsertOrUpdateItem"
-    type="POSTS" typeOfDialog="update"
+    type="POSTS" 
+    typeOfDialog="update"
   />
 </template>
 

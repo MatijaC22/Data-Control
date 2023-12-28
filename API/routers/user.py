@@ -57,4 +57,16 @@ def submit_form(
     current_user = Depends(get_current_user)
     ):
     return db_user.upload_image( name, current_user, images)
+
+# THIS IS HERE IN USER AS I DONT KNOW YET HOW WILL I USE IT, IDEA IS TO HAVE 
+# ABILITY TO STORE MULTIPLE IAGES FOR ONE ITEM.
+# IT WILL BE (FOR NOW) CONECTED WITH CONTAINERS JUST TO SEE IF IT WORKS
+# IF IT WORKS IDEA IS TO MAKE NEW FOLDER FOR THIS ITEMS IN ASSETS AND TO INSERT NAMES AS ARRAY IN DB
+@router.post('/uploadImages/multi')
+def submit_form(
+    id: int = Form(...),
+    images: List[UploadFile]   = File(...), 
+    current_user = Depends(get_current_user)
+    ):
+    return db_user.upload_images_multi( id, current_user, images)
    

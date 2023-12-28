@@ -9,7 +9,7 @@ interface LoginValues {
   email: string;
   password: string;
 }
-interface UserDelete {
+interface ItemDelete {
   id: number
 }
 interface User {
@@ -23,6 +23,17 @@ interface User {
   nationality: string;
   access_level: number;
   active: boolean;
+}
+interface Post {
+  id?: number;
+  user_id: number;
+  job_id: number;
+  description: string;
+}
+interface Job {
+  id?: number;
+  user_id: number;
+  reference_number: string;
 }
 
 export const useCounterStore = defineStore({
@@ -98,7 +109,7 @@ export const useCounterStore = defineStore({
       localStorage.removeItem('email');
       localStorage.removeItem('userData');
     },
-    async deleteUser(id:UserDelete) {
+    async deleteUser(id:ItemDelete) {
       
       axios.post(this.BASE_URL + 'user/delete/' + id, '',
       {
@@ -184,6 +195,176 @@ export const useCounterStore = defineStore({
             return
           });
     },
+    async deletePost(id:ItemDelete) {
+      
+      axios.post(this.BASE_URL + 'post/delete/' + id, '',
+      {
+        headers: {
+          'Authorization':'Bearer ' + localStorage.getItem('access_token'),
+          'Accept': 'application/json'
+        }
+      })
+        .then(response => {
+          console.log(response.data);
+          // window.location.reload(); // NE ZELIMO RELOADATI
+
+        })
+        .catch(error => {
+          console.error(error);
+          if(error.response.data.detail == 'Could not validate credentials'){
+            this.logout()          
+          }
+        });
+    },
+    async updatePost(post:Post){
+      await axios.post(this.BASE_URL+'post/update/' + post.id, post,
+        {
+          headers: {
+            'Authorization':'Bearer ' + localStorage.getItem('access_token'),
+            'Accept': 'application/json',
+            // 'Content-Type': 'json'//'multipart/form-data' 
+          }
+        })
+          .then(response => {
+            // Handle the response from the backend
+            console.log('Form submitted successfully', response.data);
+            // this.login_in_submission = true;
+            // this.login_alert_variant = 'color: white; background-color:#339933; border: 1px solid #339933; box-shadow: 0 0 5px rgba(0,255,0,.3), 0 0 10px rgba(0,255,0,.2), 0 0 15px rgba(0,255,0,.1), 0 1px 0 #339933;';
+            // this.login_alert_msg = 'Success! You have inserted new employ.';
+          })
+          .catch(error => {
+            // Handle errors
+            console.error('Error submitting form', error);
+            if(error.response.data.detail == 'Could not validate credentials'){
+              this.logout()          
+            }
+            // this.login_in_submission = true;
+            // this.login_alert_variant = 'color: white; background-color:#990000;  border: 1px solid #990000;  box-shadow: 0 0 5px rgba(255,0,0,.3), 0 0 10px rgba(255,0,0,.2), 0 0 15px rgba(255,0,0,.1), 0 1px 0 #990000';
+            // this.login_alert_msg = error.response.data.detail;
+            return
+          });
+    },
+    async insertPost(post:Post){
+      delete post['id'];
+      
+      console.log(post)
+      
+      await axios.post(this.BASE_URL+'post/create', post,
+        {
+          headers: {
+            'Authorization':'Bearer ' + localStorage.getItem('access_token'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            // 'Content-Type': 'multipart/form-data' 
+          }
+        })
+          .then(response => {
+            // Handle the response from the backend
+            console.log('Form submitted successfully', response.data);
+            
+            // this.login_in_submission = true;
+            // this.login_alert_variant = 'color: white; background-color:#339933; border: 1px solid #339933; box-shadow: 0 0 5px rgba(0,255,0,.3), 0 0 10px rgba(0,255,0,.2), 0 0 15px rgba(0,255,0,.1), 0 1px 0 #339933;';
+            // this.login_alert_msg = 'Success! You have inserted new employ.';
+          })
+          .catch(error => {
+            // Handle errors
+            console.error('Error submitting form', error.response.status, error.response.data);
+
+            console.error('Error submitting form', error);
+            if(error.response.data.detail == 'Could not validate credentials'){
+              this.logout()          
+            }
+            // this.login_in_submission = true;
+            // this.login_alert_variant = 'color: white; background-color:#990000;  border: 1px solid #990000;  box-shadow: 0 0 5px rgba(255,0,0,.3), 0 0 10px rgba(255,0,0,.2), 0 0 15px rgba(255,0,0,.1), 0 1px 0 #990000';
+            // this.login_alert_msg = error.response.data.detail;
+            return
+          });
+    },
+    async deleteJob(id:ItemDelete) {
+      
+      axios.post(this.BASE_URL + 'job/delete/' + id, '',
+      {
+        headers: {
+          'Authorization':'Bearer ' + localStorage.getItem('access_token'),
+          'Accept': 'application/json'
+        }
+      })
+        .then(response => {
+          console.log(response.data);
+          // window.location.reload(); // NE ZELIMO RELOADATI
+
+        })
+        .catch(error => {
+          console.error(error);
+          if(error.response.data.detail == 'Could not validate credentials'){
+            this.logout()          
+          }
+        });
+    },
+    async updateJob(job:Job){
+      await axios.post(this.BASE_URL+'job/update/' + job.id, job,
+        {
+          headers: {
+            'Authorization':'Bearer ' + localStorage.getItem('access_token'),
+            'Accept': 'application/json',
+            // 'Content-Type': 'json'//'multipart/form-data' 
+          }
+        })
+          .then(response => {
+            // Handle the response from the backend
+            console.log('Form submitted successfully', response.data);
+            // this.login_in_submission = true;
+            // this.login_alert_variant = 'color: white; background-color:#339933; border: 1px solid #339933; box-shadow: 0 0 5px rgba(0,255,0,.3), 0 0 10px rgba(0,255,0,.2), 0 0 15px rgba(0,255,0,.1), 0 1px 0 #339933;';
+            // this.login_alert_msg = 'Success! You have inserted new employ.';
+          })
+          .catch(error => {
+            // Handle errors
+            console.error('Error submitting form', error);
+            if(error.response.data.detail == 'Could not validate credentials'){
+              this.logout()          
+            }
+            // this.login_in_submission = true;
+            // this.login_alert_variant = 'color: white; background-color:#990000;  border: 1px solid #990000;  box-shadow: 0 0 5px rgba(255,0,0,.3), 0 0 10px rgba(255,0,0,.2), 0 0 15px rgba(255,0,0,.1), 0 1px 0 #990000';
+            // this.login_alert_msg = error.response.data.detail;
+            return
+          });
+    },
+    async insertJob(job:Job){
+      delete job['id'];
+      
+      console.log(job)
+      
+      await axios.post(this.BASE_URL+'job/create', job,
+        {
+          headers: {
+            'Authorization':'Bearer ' + localStorage.getItem('access_token'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            // 'Content-Type': 'multipart/form-data' 
+          }
+        })
+          .then(response => {
+            // Handle the response from the backend
+            console.log('Form submitted successfully', response.data);
+            
+            // this.login_in_submission = true;
+            // this.login_alert_variant = 'color: white; background-color:#339933; border: 1px solid #339933; box-shadow: 0 0 5px rgba(0,255,0,.3), 0 0 10px rgba(0,255,0,.2), 0 0 15px rgba(0,255,0,.1), 0 1px 0 #339933;';
+            // this.login_alert_msg = 'Success! You have inserted new employ.';
+          })
+          .catch(error => {
+            // Handle errors
+            console.error('Error submitting form', error.response.status, error.response.data);
+
+            console.error('Error submitting form', error);
+            if(error.response.data.detail == 'Could not validate credentials'){
+              this.logout()          
+            }
+            // this.login_in_submission = true;
+            // this.login_alert_variant = 'color: white; background-color:#990000;  border: 1px solid #990000;  box-shadow: 0 0 5px rgba(255,0,0,.3), 0 0 10px rgba(255,0,0,.2), 0 0 15px rgba(255,0,0,.1), 0 1px 0 #990000';
+            // this.login_alert_msg = error.response.data.detail;
+            return
+          });
+    },
     async getUser(){
       try{
         const response = await axios.get(this.BASE_URL + 'user/'+window.location.pathname.split('/').pop(),
@@ -210,6 +391,40 @@ export const useCounterStore = defineStore({
       console.log(formData)
 
       await axios.post(this.BASE_URL+'user/uploadImage', formData,
+      {
+        headers: {
+          'Authorization':'Bearer ' + localStorage.getItem('access_token'),
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data' 
+        }
+      })
+        .then(response => {
+          // // Handle the response from the backend
+          // console.log('Form submitted successfully', response.data);
+          // this.login_in_submission = true;
+          // this.login_alert_variant = 'color: white; background-color:#339933; border: 1px solid #339933; box-shadow: 0 0 5px rgba(0,255,0,.3), 0 0 10px rgba(0,255,0,.2), 0 0 15px rgba(0,255,0,.1), 0 1px 0 #339933;';
+          // this.login_alert_msg = 'Success! You have inserted new post.';
+        })
+        .catch(error => {
+          // // Handle errors
+          // console.error('Error submitting form', error);
+          // if(error.response.data.detail == 'Could not validate credentials'){
+          //   this.logout()          
+          // }
+          // this.login_in_submission = true;
+          // this.login_alert_variant = 'color: white; background-color:#990000;  border: 1px solid #990000;  box-shadow: 0 0 5px rgba(255,0,0,.3), 0 0 10px rgba(255,0,0,.2), 0 0 15px rgba(255,0,0,.1), 0 1px 0 #990000';
+          // this.login_alert_msg = error.response.data.detail;
+          // return
+        });
+    },
+    async uploadImages(image_name_folder: string, images: any){
+
+      const formData = new FormData();
+      formData.append('images', images);
+      formData.append('id', image_name_folder);
+      console.log(formData)
+
+      await axios.post(this.BASE_URL+'post/uploadImages/multi', formData,
       {
         headers: {
           'Authorization':'Bearer ' + localStorage.getItem('access_token'),

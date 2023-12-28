@@ -25,10 +25,10 @@
     >
       <router-link to="/" class="routerLink">
         <v-tab :value="1">
-              Home
+          Home
         </v-tab>
       </router-link>
-      <!-- <v-tab :value="2" id="menu-activator-posts">
+      <v-tab :value="2" id="menu-activator-posts">
         Posts
         <v-menu activator="#menu-activator-posts" > 
           <v-list style="border-top-left-radius: 0; border-top-right-radius: 0;">
@@ -47,7 +47,7 @@
             </v-list-item>
           </v-list>
         </v-menu>
-      </v-tab> -->
+      </v-tab>
       <v-tab :value="3"  id="menu-activator" v-if="userData.access_level == 1">
         Data
         <v-menu activator="#menu-activator" > 
@@ -63,16 +63,17 @@
           </v-list>
         </v-menu>
       </v-tab>
-      <!-- <router-link to="/PriceCalculator" class="routerLink" v-if="userData.access_level == 1">
+      <router-link to="/PriceCalculator" class="routerLink" v-if="userData.access_level == 1">
         <v-tab :value="4">
           Calculate
         </v-tab>
-      </router-link> -->
+      </router-link>
     </v-tabs>
           
 
     <v-spacer v-if="mdAndUp"></v-spacer>    
-          
+
+    <!-- SEARCH BAR -->
     <v-btn icon v-if="smAndDown" @click="searchBarVisible = !searchBarVisible">
       <v-icon>mdi-magnify</v-icon>
     </v-btn>
@@ -210,9 +211,10 @@
   <InsertOrUpdateDialog 
     :insertOrUpdateDialog="insertOrUpdateDialog"
     @update:insertOrUpdateDialog="insertOrUpdateDialog = $event"
-    :insertOrUpdateDialogItem="insertOrUpdateDialogItem"
+    :uniqueItem="chosenItem"
     @insertOrUpdateItem="handleInsertOrUpdateItem"
-    type="POSTS" typeOfDialog="insert"
+    type="POSTS" 
+    typeOfDialog="insert"
   />
 </template>
 
@@ -240,6 +242,7 @@ export default defineComponent({
 
       insertOrUpdateDialog: false,
       insertOrUpdateDialogItem:{},
+      chosenItem:{},
 
       // SAMO ZA TEST MAKNI TO KAD RJESIS BEFORE ROUTE PROBLEM
       searchResults:[],
@@ -254,7 +257,7 @@ export default defineComponent({
       search:'',
       open: ['Users'],
       data: [
-        ['Containers', 'mdi-file-outline', '/database/containers'],
+        ['Jobs', 'mdi-file-outline', '/database/jobs'],
         ['Employes', 'mdi-plus-outline', '/database/employes'],
       ],    
       navBarMain: [
@@ -281,8 +284,8 @@ export default defineComponent({
           icon: 'mdi-home'
         },
         {
-          title: 'CONTAINERS',
-          value: '/database/containers',
+          title: 'JOBS',
+          value: '/database/jobs',
           icon: 'mdi-account-multiple-outline'
         },
         {
@@ -304,13 +307,13 @@ export default defineComponent({
   methods: {
     showInsertOrUpdateDialog(item,typeOfDialog){
       this.typeOfDialog = typeOfDialog;
-      this.insertOrUpdateDialogItem = item;
+      this.chosenItem = item;
       this.insertOrUpdateDialog = true;
     },
     handleInsertOrUpdateItem(item) {
       // Do something with item here
       console.log(this.typeOfDialog);
-      console.log(this.insertOrUpdateDialogItem);
+      console.log(this.chosenItem);
       console.log(item);
       window.location.reload();
     },

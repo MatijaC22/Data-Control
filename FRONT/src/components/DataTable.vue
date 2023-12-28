@@ -80,9 +80,9 @@
   </thead>
     <tbody>
       <tr v-for="(item, index) in paginatedItems" :key="index">
-        <td v-for="(value, key) in item" :key="key" :style="`max-width:300px; color: ${key=='last_modify' && isOlderThan30Days(item.last_modify) ? 'red' : 'black'}`">{{ (key.indexOf('last_modify') != (-1) || key.indexOf('created_at')  != (-1)) ? formatDate(value) : value }}</td>
+        <td v-for="(value, key) in item" :key="key" :style="`max-width:300px; color: ${key=='last_modify' && isOlderThan30Days(item.last_modify) ? 'red' : 'black'}`">{{ (key.indexOf('date_of_birth') != (-1) || key.indexOf('last_modify') != (-1) || key.indexOf('created_at')  != (-1)) ? formatDate(value) : value }}</td>
         <td>
-          <div v-if="name == 'CONTAINERS'" @click="copyContainersDetails(item)" style="color:black; cursor:pointer;">
+          <div v-if="name == 'JOBS'" @click="copyJobsDetails(item)" style="color:black; cursor:pointer;">
             Copy
           </div>
           <router-link v-if="name == 'EMPLOYES'" :to="'/user/'+item.id" class="routerLink" style="color:black;">
@@ -202,7 +202,7 @@ export default {
     },
   },
   methods:{
-    ...mapActions(useCounterStore, ['deleteUser']),
+    ...mapActions(useCounterStore, ['deleteUser','deleteJob']),
 
     formatDate(timestamp) {
       const dateObj = new Date(timestamp);
@@ -264,6 +264,8 @@ export default {
       console.log(item);
       if(this.name == 'EMPLOYES'){
         this.deleteUser(item.id)
+      }else if(this.name == 'JOBS'){
+        this.deleteJob(item.id)
       }else{
         console.log('NOT FINISHED YET')
       }
@@ -277,8 +279,8 @@ export default {
       XLSX.utils.book_append_sheet(workbook, worksheet, "framework")
       XLSX.writeFile(workbook, this.name + '.xlsx')
     },
-    copyContainersDetails(item){
-      const textToCopy = `Container details: reference_number: ${item.reference_number}; country: ${item.country}; responsible name contact: ${item.responsible_email}; `;
+    copyJobsDetails(item){
+      const textToCopy = `Jobs details: reference_number: ${item.reference_number}; country: ${item.country}; responsible name contact: ${item.responsible_email}; `;
 
       navigator.clipboard.writeText(textToCopy)
         .then(() => {
